@@ -65,4 +65,6 @@ const TourCard: React.FC<TourCardProps> = React.memo(({
   );
 });
 
+TourCard.displayName = "TourCard";
+
 export default TourCard;

@@ -12,6 +12,18 @@ interface Tour {
   duration: string;
 }
 
+interface TourApiResponse {
+  products: {
+    id: number;
+    title: string;
+    galleries: { url: string }[];
+    price: { adultPrice: number };
+    rating: number;
+    activityLocation: { address: string };
+    routes: { duration: string }[];
+  }[];
+}
+
 const useTours = () => {
   const [tours, setTours] = useState<Tour[]>([]);
   const [loading, setLoading] = useState(true);
@@ -21,7 +33,7 @@ const useTours = () => {
     const fetchTours = async () => {
       try {
         setLoading(true);
-        const response = await axios.get('https://beta.tripkolic.com/api/v1/product/task/tours');
+        const response = await axios.get<TourApiResponse>('https://beta.tripkolic.com/api/v1/product/task/tours');
         
         // API yanıtını kontrol edelim
         console.log('API Response:', response.data);
@@ -31,7 +43,7 @@ const useTours = () => {
           // `products` dizisini alıyoruz
           const toursData = response.data.products;
 
-          const formattedTours = toursData.map((tour: any) => ({
+          const formattedTours = toursData.map((tour) => ({
             id: tour.id || Math.random(),
             title: tour.title || 'Unknown Tour',
             image: (tour.galleries && tour.galleries[0] && tour.galleries[0].url) || '/placeholder-tour.jpg',

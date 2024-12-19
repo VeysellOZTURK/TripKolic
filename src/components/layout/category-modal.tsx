@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { FaTimes, FaStar } from "react-icons/fa";
 
-interface Category {
-  key: string;
-  name: string;
-  filters: { name: string; type: string }[];
-}
+// interface Category {
+//   key: string;
+//   name: string;
+//   filters: { name: string; type: string }[];
+// }
 
 const categories = [
   {

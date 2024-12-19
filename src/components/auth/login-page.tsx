@@ -8,6 +8,7 @@ import nav from "../../../public/nav.png";
 import icon from "../../../public/title.png";
 import google from "../../../public/google.png";
 import apple from "../../../public/apple.png";
+import Link from "next/link";
 
 const LoginPage: React.FC = () => {
   const [isSignUp, setIsSignUp] = useState(false);
@@ -152,7 +153,7 @@ const LoginPage: React.FC = () => {
             <div className="text-center mt-4">
             {isSignUp
               ?<p className="text-[10px] text-gray-400 ">
-                By signing up, you agree to our <a href="/" className="underline text-primary-400">Terms of Service</a> and <a href="/" className="underline text-primary-400">Privacy Policy</a>.
+                By signing up, you agree to our <Link href="/" className="underline text-primary-400">Terms of Service</Link> and <Link href="/" className="underline text-primary-400">Privacy Policy</Link>.
               </p>: null }
               <button
                 onClick={() => setIsSignUp(!isSignUp)}

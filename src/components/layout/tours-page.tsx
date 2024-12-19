@@ -13,6 +13,7 @@ export default function ToursPage() {
   const handleApplyFilters = (_category: string, selectedFilters: { [key: string]: string }) => {
     setFilters(selectedFilters); // Gelen filtreleri state'e kaydet
   };
+  handleApplyFilters.displayName = 'handleApplyFilters'
 
   // Filtrelenmiş turları hesapla
   const filteredTours = tours.filter((tour) => {
@@ -66,7 +67,7 @@ export default function ToursPage() {
         <div className="min-h-screen bg-[#E7E7E5]">
           <Navbar onApplyFilters={handleApplyFilters} />
           <div className="pt-48 px-4 flex flex-col items-center justify-center min-h-[60vh] pointer-events-none ">
-          <p className="text-gray-700 text-center text-base font-semibold" >Sorry, we couldn't find the tours you wanted</p>
+          <p className="text-gray-700 text-center text-base font-semibold" >Sorry, we couldn&apos;t find the tours you wanted...</p>
             <iframe className='pointer-events-none' src="https://giphy.com/embed/9J7tdYltWyXIY" width="340" height="403" allowFullScreen></iframe>
           </div>
         </div>
