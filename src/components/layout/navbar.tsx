@@ -32,7 +32,12 @@ const Navbar: React.FC = () => {
       </div>
 
       {isCategoryModalOpen && (
-        <CategoryModal onClose={toggleCategoryModal} />
+        <CategoryModal 
+          onClose={toggleCategoryModal} 
+          onApplyFilters={(category, filters) => {
+            console.log('Filters applied:', category, filters);
+          }} 
+        />
       )}
     </nav>
   );

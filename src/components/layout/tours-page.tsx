@@ -52,8 +52,8 @@ export default function ToursPage() {
     <div className="min-h-screen bg-gray-100">
       <Navbar />
       
-      <main className="pt-16 px-4">
-        <h1 className="text-2xl font-bold mb-4 text-gray-800">Popular Tours</h1>
+      <main className="pt-16 px-4 mt-6">
+        <h1 className="text-2xl font-bold mb-4 text-primary-600">Popular Tours</h1>
         
         <div className="grid gap-4">
           {tours.map((tour) => (
