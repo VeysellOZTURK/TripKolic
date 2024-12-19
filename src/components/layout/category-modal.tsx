@@ -1,5 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { FaTimes, FaStar } from "react-icons/fa";
+
+interface Category {
+  key: string;
+  name: string;
+  filters: { name: string; type: string }[];
+}
 
 const categories = [
   {
@@ -57,6 +63,11 @@ const CategoryModal: React.FC<CategoryModalProps> = ({
 }) => {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [selectedFilters, setSelectedFilters] = useState<{ [key: string]: string }>({});
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    setIsVisible(true);
+  }, []);
 
   const handleCategorySelect = (category: string) => {
     setSelectedCategory(category);
@@ -86,7 +97,11 @@ const CategoryModal: React.FC<CategoryModalProps> = ({
   );
 
   return (
-    <div className="fixed inset-0 z-50 bg-white shadow-lg">
+    <div 
+  className={`fixed inset-0 z-50 bg-white shadow-lg transition-all duration-700 ${isVisible ? 'opacity-100 -translate-x-0' : 'opacity-0 -translate-x-full'}`} 
+  onAnimationEnd={() => !isVisible && onClose()}
+>
+
       <div className="p-4">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-xl font-bold text-primary-500">Categories</h2>

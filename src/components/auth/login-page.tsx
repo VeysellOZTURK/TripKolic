@@ -139,13 +139,13 @@ const LoginPage: React.FC = () => {
                 className="w-full flex bg-black text-white py-1 rounded-md hover:opacity-90 transition duration-300 cursor-pointer"
               >
                 <Image src={apple} alt="apple" className="h-6 w-6 mx-4 mt-2"/>
-                <h1 className="my-2 text-center">Sign in with Apple</h1>
+                <h1 className="my-2 text-center">{isSignUp ? "Sign up" : "Sign in"} with Apple</h1>
               </div>
               <div
                 className="w-full flex bg-red-500 text-white rounded-md py-1 hover:bg-red-600 transition duration-300 cursor-pointer"
               >
                 <Image src={google} alt="google" className="h-6 w-6 mx-4 mt-2"/>
-                <h1 className="my-2">Sign in with Google</h1>
+                <h1 className="my-2">{isSignUp ? "Sign up" : "Sign in"} with Google</h1>
               </div>
             </div>
 

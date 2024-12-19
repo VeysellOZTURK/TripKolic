@@ -10,7 +10,7 @@ export default function ToursPage() {
   // Filtreleme durumunu yönet
   const [filters, setFilters] = useState<{ [key: string]: string }>({});
 
-  const handleApplyFilters = (category: string, selectedFilters: { [key: string]: string }) => {
+  const handleApplyFilters = (_category: string, selectedFilters: { [key: string]: string }) => {
     setFilters(selectedFilters); // Gelen filtreleri state'e kaydet
   };
 
@@ -60,17 +60,18 @@ export default function ToursPage() {
     );
   }
 
-  // Turlar yoksa
-  if (tours.length === 0) {
-    return (
-      <div className="min-h-screen">
-        <Navbar onApplyFilters={handleApplyFilters} />
-        <div className="pt-16 px-4 flex items-center justify-center min-h-[60vh]">
-          <p className="text-gray-500 text-center">No tours available</p>
+    // filtrelemeye uygun turlar yoksa
+    if (filteredTours.length === 0) {
+      return (
+        <div className="min-h-screen bg-[#E7E7E5]">
+          <Navbar onApplyFilters={handleApplyFilters} />
+          <div className="pt-48 px-4 flex flex-col items-center justify-center min-h-[60vh] pointer-events-none ">
+          <p className="text-gray-700 text-center text-base font-semibold" >Sorry, we couldn't find the tours you wanted</p>
+            <iframe className='pointer-events-none' src="https://giphy.com/embed/9J7tdYltWyXIY" width="340" height="403" allowFullScreen></iframe>
+          </div>
         </div>
-      </div>
-    );
-  }
+      );
+    }
 
   return (
     <div className="min-h-screen bg-gray-100">
