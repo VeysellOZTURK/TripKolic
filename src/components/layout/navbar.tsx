@@ -1,5 +1,5 @@
 'use client';
-
+import useTours from '../../hooks/use-tours';
 import React, { useState } from 'react';
 import { FaBars, FaUser } from 'react-icons/fa';
 import CategoryModal from './category-modal';
@@ -8,6 +8,7 @@ import nav from '../../../public/nav.png';
 
 const Navbar: React.FC = () => {
   const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false);
+
 
   const toggleCategoryModal = () => {
     setIsCategoryModalOpen(!isCategoryModalOpen);
@@ -34,9 +35,7 @@ const Navbar: React.FC = () => {
       {isCategoryModalOpen && (
         <CategoryModal 
           onClose={toggleCategoryModal} 
-          onApplyFilters={(category, filters) => {
-            console.log('Filters applied:', category, filters);
-          }} 
+onApplyFilters={ ()=>{}}
         />
       )}
     </nav>

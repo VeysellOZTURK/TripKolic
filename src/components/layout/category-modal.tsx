@@ -4,15 +4,15 @@ import React, { useState } from "react";
 import { FaTimes } from "react-icons/fa";
 
 const categories = [
-  { name: "Tours", key: "tours", filters: ["Duration", "Price", "Type"] },
-  { name: "Tickets", key: "tickets", filters: ["Event Type", "Price", "Date"] },
-  { name: "Rent", key: "rent", filters: ["Vehicle Type", "Price", "Location"] },
-  { name: "Transfer", key: "transfer", filters: ["From", "To", "Date"] },
+  { name: "Tours", key: "tours", filters: [{ name: "Duration", type: "checkbox" }, { name: "Min Price", type: "text" }, { name: "Max Price", type: "text" }, { name: "Type", type: "checkbox" }] },
+  { name: "Tickets", key: "tickets", filters: [{ name: "Event Type", type: "checkbox" }, { name: "Min Price", type: "text" }, { name: "Max Price", type: "text" }, { name: "Date", type: "checkbox" }] },
+  { name: "Rent", key: "rent", filters: [{ name: "Vehicle Type", type: "checkbox" }, { name: "Min Price", type: "text" }, { name: "Max Price", type: "text" }, { name: "Location", type: "checkbox" }] },
+  { name: "Transfer", key: "transfer", filters: [{ name: "From", type: "checkbox" }, { name: "To", type: "checkbox" }, { name: "Date", type: "checkbox" }] },
 ];
 
 interface CategoryModalProps {
   onClose: () => void;
-  onApplyFilters: (category: string, filters: string[]) => void;
+  onApplyFilters: (category: string, filters: { [key: string]: string }) => void;
 }
 
 const CategoryModal: React.FC<CategoryModalProps> = ({
@@ -20,19 +20,18 @@ const CategoryModal: React.FC<CategoryModalProps> = ({
   onApplyFilters,
 }) => {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-  const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
+  const [selectedFilters, setSelectedFilters] = useState<{ [key: string]: string }>({});
 
   const handleCategorySelect = (category: string) => {
     setSelectedCategory(category);
-    setSelectedFilters([]);
+    setSelectedFilters({});
   };
 
-  const handleFilterToggle = (filter: string) => {
-    setSelectedFilters((prev) =>
-      prev.includes(filter)
-        ? prev.filter((f) => f !== filter)
-        : [...prev, filter]
-    );
+  const handleFilterChange = (filter: string, value: string) => {
+    setSelectedFilters((prev) => ({
+      ...prev,
+      [filter]: value,
+    }));
   };
 
   const handleApplyFilters = () => {
@@ -78,29 +77,47 @@ const CategoryModal: React.FC<CategoryModalProps> = ({
               {selectedCategory} Filters
             </h3>
             {currentCategory?.filters.map((filter) => (
-              <div key={filter} className="flex items-center mb-2">
-                <input
-                  type="checkbox"
-                  id={filter}
-                  checked={selectedFilters.includes(filter)}
-                  onChange={() => handleFilterToggle(filter)}
-                  className="mr-2 text-primary-500"
-                />
-                <label className="font-light" htmlFor={filter}>{filter}</label>
+              <div key={filter.name} className="flex items-center mb-2">
+                {filter.type === "checkbox" ? (
+                  <>
+                    <input
+                      type="checkbox"
+                      id={filter.name}
+                      checked={!!selectedFilters[filter.name]}
+                      onChange={(e) =>
+                        handleFilterChange(filter.name, e.target.checked ? "true" : "")
+                      }
+                      className="mr-2 text-primary-500"
+                    />
+                    <label className="font-light" htmlFor={filter.name}>{filter.name}</label>
+                  </>
+                ) : (
+                  <>
+                    <label className="font-light mr-2" htmlFor={filter.name}>{filter.name}</label>
+                    <input
+                      type="number"
+                      id={filter.name}
+                      value={selectedFilters[filter.name] || ""}
+                      onChange={(e) =>
+                        handleFilterChange(filter.name, e.target.value)
+                      }
+                      className="p-2 border rounded-lg"
+                    />
+                  </>
+                )}
               </div>
             ))}
           </div>
         )}
       </div>
       <div className="w-full flex justify-center">
-      <button
-        onClick={handleApplyFilters}
-        className="fixed bottom-16 mx-4 w-5/6 bg-primary-500 text-white font-extrabold py-2 rounded-lg"
-      >
-        Apply Filters
-      </button>
+        <button
+          onClick={handleApplyFilters}
+          className="fixed bottom-16 mx-4 w-5/6 bg-primary-500 text-white font-extrabold py-2 rounded-lg"
+        >
+          Apply Filters
+        </button>
       </div>
-      
     </div>
   );
 };

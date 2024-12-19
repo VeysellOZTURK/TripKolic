@@ -33,7 +33,7 @@ const LoginPage: React.FC = () => {
 
   return (
     <div className="min-h-screen text-primary-500 bg-gray-100">
-      <div className="z-50 bg-white shadow-md h-16">
+      <div className="sticky top-0 z-50 bg-white shadow-md h-16">
         <div className="flex items-center justify-center">
           <Image src={icon} alt="Icon" className="w-4 h-6 mt-4 mr-2" />
           <h2 className="text-center text-2xl font-bold pt-4 text-primary-500">
@@ -49,7 +49,7 @@ const LoginPage: React.FC = () => {
         </div>
       </div>
 
-      <div className="flex flex-col justify-center pb-12 px-4 pt-32">
+      <div className="flex flex-col justify-center pb-12 px-4 pt-12">
         <div className="max-w-md w-full mx-auto">
           <div className="bg-white p-8 rounded-xl shadow-md">
             <div className="flex justify-center mb-5">
@@ -128,28 +128,32 @@ const LoginPage: React.FC = () => {
 
               <button
                 type="submit"
-                className="w-full bg-primary-500 text-white py-2 rounded-md hover:bg-primary-600 transition duration-300"
+                className="w-full bg-primary-500 text-white py-2 rounded-md hover:bg-gray-200 hover:text-primary-500 hover:border-primary-400 hover:border-2 hover:shadow-primary-400 hover:shadow-md transition duration-700"
               >
                 {isSignUp ? "Sign Up" : "Sign In"}
               </button>
             </form>
 
-            <div className="flex flex-col gap-3 mt-4">
+            <div className="flex flex-col gap-3 mt-4 ">
               <div
-                className="w-full flex bg-black text-white py-1 rounded-md hover:opacity-90 transition duration-300"
+                className="w-full flex bg-black text-white py-1 rounded-md hover:opacity-90 transition duration-300 cursor-pointer"
               >
-                <Image src={apple} alt="apple" className="h-7 w-7 mx-4 mt-1"/>
-                <h1 className="my-2 ">Sign in with Apple</h1>
+                <Image src={apple} alt="apple" className="h-6 w-6 mx-4 mt-2"/>
+                <h1 className="my-2 text-center">Sign in with Apple</h1>
               </div>
               <div
-                className="w-full flex bg-red-500 text-white rounded-md py-1 hover:bg-red-600 transition duration-300"
+                className="w-full flex bg-red-500 text-white rounded-md py-1 hover:bg-red-600 transition duration-300 cursor-pointer"
               >
-                <Image src={google} alt="google" className="h-7 w-7 mx-4 mt-1"/>
+                <Image src={google} alt="google" className="h-6 w-6 mx-4 mt-2"/>
                 <h1 className="my-2">Sign in with Google</h1>
               </div>
             </div>
 
             <div className="text-center mt-4">
+            {isSignUp
+              ?<p className="text-[10px] text-gray-400 ">
+                By signing up, you agree to our <a href="/" className="underline text-primary-400">Terms of Service</a> and <a href="/" className="underline text-primary-400">Privacy Policy</a>.
+              </p>: null }
               <button
                 onClick={() => setIsSignUp(!isSignUp)}
                 className="text-primary-500 hover:underline"

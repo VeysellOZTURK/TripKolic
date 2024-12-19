@@ -1,13 +1,32 @@
-'use client';
-
-import React from 'react';
+"use client"
+import React, { useState } from 'react';
 import Navbar from './navbar';
 import TourCard from '../tours/tour-card';
 import useTours from '../../hooks/use-tours';
-
+import CategoryModal from '../layout/category-modal';
 
 export default function ToursPage() {
   const { tours, loading, error } = useTours();
+
+  const [filters, setFilters] = useState<{ [key: string]: string }>({});
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  // Filtre uygulama işlevi
+  const handleApplyFilters = (_category: string, selectedFilters: { [key: string]: string }) => {
+    setFilters(selectedFilters);
+  };
+
+  // Filtrelenmiş turlar
+  const filteredTours = tours.filter((tour) => {
+    return Object.entries(filters).every(([key, value]) => {
+      if (!value) return true; // Boş filtreleri geç
+      if (key === 'Min Price') return tour.price >= parseFloat(value);
+      if (key === 'Max Price') return tour.price <= parseFloat(value);
+      if (key === 'Duration') return tour.duration.includes(value);
+      if (key === 'Location') return tour.location.toLowerCase().includes(value.toLowerCase());
+      return true;
+    });
+  });
 
   // Loading durumunu göster
   if (loading) {
@@ -25,12 +44,6 @@ export default function ToursPage() {
         <div className="text-red-500 text-center p-4">
           <h2 className="text-xl font-bold mb-2">Error Loading Tours</h2>
           <p>{error}</p>
-          {/* Hata detaylarını geliştirme ortamında göster */}
-          {process.env.NODE_ENV === 'development' && (
-            <pre className="mt-4 text-sm bg-gray-100 p-4 rounded">
-              {error}
-            </pre>
-          )}
         </div>
       </div>
     );
@@ -55,8 +68,15 @@ export default function ToursPage() {
       <main className="pt-16 px-4 mt-6">
         <h1 className="text-2xl font-bold mb-4 text-primary-600">Popular Tours</h1>
         
+        <button
+          className="mb-4 bg-primary-500 text-white py-2 px-4 rounded"
+          onClick={() => setIsModalOpen(true)}
+        >
+          Filter Tours
+        </button>
+
         <div className="grid gap-4">
-          {tours.map((tour) => (
+          {filteredTours.map((tour) => (
             <TourCard
               key={tour.id}
               title={tour.title}
@@ -69,6 +89,13 @@ export default function ToursPage() {
           ))}
         </div>
       </main>
+
+      {isModalOpen && (
+        <CategoryModal
+          onClose={() => setIsModalOpen(false)}
+          onApplyFilters={handleApplyFilters}
+        />
+      )}
     </div>
   );
 }
