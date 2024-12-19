@@ -6,16 +6,20 @@ interface TourCardProps {
   title: string;
   image: string;
   price: number;
-  rating: number;
   location: string;
   duration: string;
+  activities: string[];
+  startTimes: string[];
+  vehicle: string;
+  category: string;
+  rating: number;
 }
 
 const TourCard: React.FC<TourCardProps> = React.memo(({
   title,
   image,
   price = 0,
-  rating = 0,
+  rating = 4.2,
   location,
   duration
 }) => {
@@ -53,7 +57,7 @@ const TourCard: React.FC<TourCardProps> = React.memo(({
         <div className="flex justify-between items-center">
           <div className="flex items-center">
             <FaStar className="text-yellow-400 mr-1" />
-            <span className='text-gray-600 font-bold'>{rating ? rating.toFixed(1) : 'N/A'}</span>
+            <span className='text-gray-600 font-bold'>{rating}</span>
           </div>
           
           <div className="text-lg font-bold text-primary-500">

@@ -2,26 +2,126 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 
-interface Tour {
+interface Location {
+  address: string;
+  latitude: number;
+  longitude: number;
+}
+
+interface Route {
   id: number;
-  title: string;
-  image: string;
-  price: number;
-  rating: number;
-  location: string;
+  name: string;
+  startDate: string;
+  endDate: string;
+  operatingDays: string[];
   duration: string;
+  groupSize: number;
+  startTime: string[];
+  guideLanguage: string[];
+  locations: {
+    id: number;
+    lat: number;
+    lng: number;
+    name: string;
+    stop: string | null;
+    activities: { name: string }[];
+    sightseeing: boolean;
+  }[];
+}
+
+interface Price {
+  id: number;
+  isShared: boolean;
+  isPrivate: boolean;
+  adultPrice: number;
+  childPrice: number;
+  infantPrice: number;
+  additionalPrices: {
+    adultPrice: number;
+    childPrice: number;
+    infantPrice: number;
+  };
+  group: {
+    size: number;
+    retailPrice: number;
+  };
+}
+interface foodAndDrinks {
+  id: number;
+  name: string;
+}
+
+interface Vehicle {
+  id: number;
+  name: string;
+}
+
+interface TourCategory {
+  id: number;
+  name: string;
+}
+
+interface Gallery {
+  id: number;
+  url: string;
+}
+
+interface Product {
+  id: number;
+  productId: string;
+  title: string;
+  description: string;
+  isPayLater: boolean;
+  cutOffTime: number;
+  transferType: string;
+  isTransfer: boolean;
+  transferDescription: string;
+  activityLocation: Location;
+  draft: boolean;
+  step: number;
+  stepChild: number;
+  createdAt: string;
+  productCategory: string;
+  vehicle: Vehicle;
+  tourCategory: TourCategory;
+  routes: Route[];
+  price: Price;
+  galleries: Gallery[];
+  foodAndDrinks: foodAndDrinks;
 }
 
 interface TourApiResponse {
-  products: {
-    id: number;
-    title: string;
-    galleries: { url: string }[];
-    price: { adultPrice: number };
-    rating: number;
-    activityLocation: { address: string };
-    routes: { duration: string }[];
-  }[];
+  products: Product[];
+}
+
+interface Tour {
+  id: number;
+  productId: string;
+  title: string;
+  description: string;
+  images: string[];
+  price: {
+    adult: number;
+    child: number;
+    infant: number;
+  };
+  location: {
+    address: string;
+    coordinates: {
+      lat: number;
+      lng: number;
+    };
+  };
+  duration: string;
+  startTimes: string[];
+  groupSize: number;
+  vehicle: string;
+  category: string;
+  isTransfer: boolean;
+  transferDescription: string | null;
+  operatingDays: string[];
+  activities: string[];
+  rating: number; // Added rating property
 }
 
 const useTours = () => {
@@ -34,24 +134,48 @@ const useTours = () => {
       try {
         setLoading(true);
         const response = await axios.get<TourApiResponse>('https://beta.tripkolic.com/api/v1/product/task/tours');
-        
-        // API yanıtını kontrol edelim
-        console.log('API Response:', response.data);
 
-        // API yanıtının yapısını kontrol edelim
         if (response.data && response.data.products && Array.isArray(response.data.products)) {
-          // `products` dizisini alıyoruz
-          const toursData = response.data.products;
+          const formattedTours = response.data.products.map((product): Tour => {
+            // Get all unique activities from all route locations
+            const activities = product.routes
+              .flatMap(route => 
+                route.locations.flatMap(location => 
+                  location.activities.map(activity => activity.name)
+                )
+              )
+              .filter((value, index, self) => self.indexOf(value) === index);
 
-          const formattedTours = toursData.map((tour) => ({
-            id: tour.id || Math.random(),
-            title: tour.title || 'Unknown Tour',
-            image: (tour.galleries && tour.galleries[0] && tour.galleries[0].url) || '/placeholder-tour.jpg',
-            price: tour.price ? tour.price.adultPrice : 0,
-            rating: tour.rating || 4.5,  // Assume there's no direct rating in the response, you can adjust if needed
-            location: tour.activityLocation ? tour.activityLocation.address : 'Unknown Location',
-            duration: tour.routes && tour.routes[0] && tour.routes[0].duration || '1 Day'
-          }));
+            return {
+              id: product.id,
+              rating: 4.5,  // Assume there's no direct rating in the response, you can adjust if needed
+              productId: product.productId,
+              title: product.title,
+              description: product.description,
+              images: product.galleries.map(gallery => gallery.url),
+              price: {
+                adult: product.price.adultPrice,
+                child: product.price.childPrice,
+                infant: product.price.infantPrice,
+              },
+              location: {
+                address: product.activityLocation.address,
+                coordinates: {
+                  lat: product.activityLocation.latitude,
+                  lng: product.activityLocation.longitude,
+                },
+              },
+              duration: product.routes[0]?.duration || '1',
+              startTimes: product.routes[0]?.startTime || [],
+              groupSize: product.routes[0]?.groupSize || 0,
+              vehicle: product.vehicle.name,
+              category: product.foodAndDrinks.name,
+              isTransfer: product.isTransfer,
+              transferDescription: product.transferDescription,
+              operatingDays: product.routes[0]?.operatingDays || [],
+              activities,
+            };
+          });
 
           setTours(formattedTours);
           setError(null);
@@ -59,9 +183,9 @@ const useTours = () => {
           throw new Error('Invalid data format received from API');
         }
       } catch (err) {
-        console.error('Error details:', err);
+        console.error('Error fetching tours:', err);
         setError(err instanceof Error ? err.message : 'Failed to fetch tours');
-        setTours([]); // Hata durumunda tours'u boş array yap
+        setTours([]);
       } finally {
         setLoading(false);
       }
