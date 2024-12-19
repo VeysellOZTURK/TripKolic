@@ -1,7 +1,17 @@
-import type { NextConfig } from "next";
+// next.config.js
+/** @type {import('next').NextConfig} */
+import defineConfig from 'next';
 
-const nextConfig: NextConfig = {
-  /* config options here */
-};
+export default defineConfig({});
 
-export default nextConfig;
+const nextConfig = {
+  reactStrictMode: true,
+  experimental: {
+    optimizeFonts: true
+  },
+  images: {
+    domains: ['tripkolic-beta.s3.amazonaws.com', 'tripkolic-beta.s3.eu-central-1.amazonaws.com'],
+  },
+}
+
+module.exports = nextConfig
