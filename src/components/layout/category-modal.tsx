@@ -1,11 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { FaTimes, FaStar } from "react-icons/fa";
 
-// interface Category {
-//   key: string;
-//   name: string;
-//   filters: { name: string; type: string }[];
-// }
 
 const categories = [
   {
@@ -13,12 +8,13 @@ const categories = [
     key: "tours",
     filters: [
       { name: "Location", type: "text" },
-      { name: "Min Price", type: "number" },
-      { name: "Max Price", type: "number" },
-      { name: "Max-Duration", type: "number" },
+      { name: "Min-Price", type: "number" },
+      { name: "Max-Price", type: "number" },
       { name: "Min-Duration", type: "number" },
-      { name: "Max-Rate", type: "stars" },
+      { name: "Max-Duration", type: "number" },
       { name: "Min-Rate", type: "stars" },
+      { name: "Max-Rate", type: "stars" },
+
     ],
   },
   {
@@ -28,7 +24,7 @@ const categories = [
       { name: "Event Type", type: "checkbox" },
       { name: "Min Price", type: "text" },
       { name: "Max Price", type: "text" },
-      { name: "Date", type: "checkbox" },
+      { name: "Date", type: "date" },
     ],
   },
   {
@@ -77,21 +73,23 @@ const CategoryModal: React.FC<CategoryModalProps> = ({
   const handleFilterChange = (filter: string, value: string) => {
     setSelectedFilters((prev) => ({
       ...prev,
-      [filter]: value,
+      [filter]: value, // Filtre adı ve değerini state'e kaydet
     }));
   };
-
+  
   const handleStarChange = (filter: string, stars: number) => {
-    handleFilterChange(filter, String(stars));
+    handleFilterChange(filter, stars.toString());
   };
-
+  
   const handleApplyFilters = () => {
     if (selectedCategory) {
+      // Tüm filtreleri seçili kategori ile birlikte gönder
       onApplyFilters(selectedCategory, selectedFilters);
     }
+    console.log('Selected Filters:', selectedFilters);
     onClose();
   };
-
+  
   const currentCategory = categories.find(
     (cat) => cat.name === selectedCategory
   );
@@ -139,7 +137,7 @@ const CategoryModal: React.FC<CategoryModalProps> = ({
                       {filter.name}
                     </label>
                     <input
-                      type={filter.type}
+                      type="checkbox"
                       id={filter.name}
                       checked={!!selectedFilters[filter.name]}
                       onChange={(e) =>
@@ -155,10 +153,10 @@ const CategoryModal: React.FC<CategoryModalProps> = ({
                       {[1, 2, 3, 4, 5].map((star) => (
                         <FaStar
                           key={star}
-                          className={`cursor-pointer text-xl ${
+                          className={`cursor-pointer text-xl mr-2 ${
                             selectedFilters[filter.name] && parseInt(selectedFilters[filter.name]) >= star
-                              ? "text-yellow-500"
-                              : "text-gray-300"
+                              ? "text-yellow-500 duration-700"
+                              : "text-gray-300 duration-700"
                           }`}
                           onClick={() => handleStarChange(filter.name, star)}
                         />
@@ -168,13 +166,13 @@ const CategoryModal: React.FC<CategoryModalProps> = ({
                       {selectedFilters[filter.name] || 0} Star{selectedFilters[filter.name] && parseInt(selectedFilters[filter.name]) > 1 ? "s" : ""}
                     </span>
                   </div>
-                ) : (
+                ) : filter.type === "date" ? (
                   <div className="flex items-center w-full">
                     <label className="font-light mr-2" htmlFor={filter.name}>
                       {filter.name}
                     </label>
                     <input
-                      type="number"
+                      type="date"
                       id={filter.name}
                       value={selectedFilters[filter.name] || ""}
                       onChange={(e) =>
@@ -183,6 +181,36 @@ const CategoryModal: React.FC<CategoryModalProps> = ({
                       className="p-2 border rounded-lg ml-auto"
                     />
                   </div>
+                ) : filter.type === "text" ?(
+                    <div className="flex items-center w-full">
+                      <label className="font-light mr-2" htmlFor={filter.name}>
+                        {filter.name}
+                      </label>
+                      <input
+                        type="text"
+                        id={filter.name}
+                        value={selectedFilters[filter.name] || ""}
+                        onChange={(e) =>
+                          handleFilterChange(filter.name, e.target.value)
+                        }
+                        className="p-2 border rounded-lg ml-auto"
+                      />
+                    </div>
+                ) : (
+                  <div className="flex items-center w-full">
+                      <label className="font-light mr-2" htmlFor={filter.name}>
+                        {filter.name}
+                      </label>
+                      <input
+                        type="number"
+                        id={filter.name}
+                        value={selectedFilters[filter.name] || ""}
+                        onChange={(e) =>
+                          handleFilterChange(filter.name, e.target.value)
+                        }
+                        className="p-2 border rounded-lg ml-auto"
+                      />
+                    </div>
                 )}
               </div>
             ))}

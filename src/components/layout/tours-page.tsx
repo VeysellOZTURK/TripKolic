@@ -15,30 +15,23 @@ export default function ToursPage() {
   };
   handleApplyFilters.displayName = 'handleApplyFilters'
 
-  // Filtrelenmiş turları hesapla
   const filteredTours = tours.filter((tour) => {
-    return Object.entries(filters).every(([key, value]) => {
+    const result = Object.entries(filters).every(([key, value]) => {
       if (!value) return true; // Boş filtreleri geç
-
-      // Price filtrasyonu
-      if (key === 'Min Price') return tour.price >= parseFloat(value);
-      if (key === 'Max Price') return tour.price <= parseFloat(value);
-      
-      // Location filtrasyonu
-      if (key === 'Location') return tour.location.toLowerCase().includes(value.toLowerCase());
-      
-      // Duration filtrasyonu
-      if (key === 'Min Duration') return parseFloat(tour.duration) >= parseFloat(value);
-      if (key === 'Max Duration') return parseFloat(tour.duration) <= parseFloat(value);
-      
-      // Rating filtrasyonu
-      if (key === 'Rate') return tour.rating >= parseFloat(value);
-      if (key === 'Rate') return tour.rating <= parseFloat(value);
-
-      
+      if (Number(key === 'Min-Rate') && tour.rating < Number(value)) return false;
+      if (Number(key === 'Max-Rate') && tour.rating > Number(value)) return false;
+      if (key === 'Min-Price' && tour.price < Number(value)) return false;
+      if (key === 'Max-Price' && tour.price > Number(value)) return false;
+      if (key === 'Location' && !tour.location?.toLowerCase().includes(value.toLowerCase())) return false;
+      if (key === 'Min-Duration' && Number(tour.duration) < Number(value)) return false;
+      if (key === 'Max-Duration' && Number(tour.duration) > Number(value)) return false;
       return true;
     });
+  
+    return result;
   });
+
+  
 
   // Loading durumu
   if (loading) {
