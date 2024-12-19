@@ -1,14 +1,16 @@
 'use client';
-import useTours from '../../hooks/use-tours';
 import React, { useState } from 'react';
 import { FaBars, FaUser } from 'react-icons/fa';
 import CategoryModal from './category-modal';
 import Image from 'next/image';
 import nav from '../../../public/nav.png';
 
-const Navbar: React.FC = () => {
-  const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false);
+interface NavbarProps {
+  onApplyFilters: (category: string, filters: { [key: string]: string }) => void;
+}
 
+const Navbar: React.FC<NavbarProps> = ({ onApplyFilters }) => {
+  const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false);
 
   const toggleCategoryModal = () => {
     setIsCategoryModalOpen(!isCategoryModalOpen);
@@ -23,11 +25,14 @@ const Navbar: React.FC = () => {
         >
           <FaBars />
         </button>
-        <div><Image className='h-8 w-auto' src={nav} alt="Navigation" /></div>
-        
+        <div>
+          <Image className="h-8 w-auto" src={nav} alt="Navigation" />
+        </div>
+
         <button
-        onClick={() => window.location.href = '/login'}
-        className="text-primary-500 text-xl">
+          onClick={() => window.location.href = '/login'}
+          className="text-primary-500 text-xl"
+        >
           <FaUser />
         </button>
       </div>
@@ -35,7 +40,10 @@ const Navbar: React.FC = () => {
       {isCategoryModalOpen && (
         <CategoryModal 
           onClose={toggleCategoryModal} 
-onApplyFilters={ ()=>{}}
+          onApplyFilters={(category: string, filters: { [key: string]: string }) => {
+            onApplyFilters(category, filters); // Filtreleri üst bileşene ilet
+            toggleCategoryModal(); // Modal'ı kapat
+          }}
         />
       )}
     </nav>

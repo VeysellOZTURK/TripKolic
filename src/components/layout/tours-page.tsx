@@ -1,34 +1,45 @@
-"use client"
+'use client';
 import React, { useState } from 'react';
 import Navbar from './navbar';
 import TourCard from '../tours/tour-card';
 import useTours from '../../hooks/use-tours';
-import CategoryModal from '../layout/category-modal';
 
 export default function ToursPage() {
   const { tours, loading, error } = useTours();
 
+  // Filtreleme durumunu yönet
   const [filters, setFilters] = useState<{ [key: string]: string }>({});
-  const [isModalOpen, setIsModalOpen] = useState(false);
 
-  // Filtre uygulama işlevi
-  const handleApplyFilters = (_category: string, selectedFilters: { [key: string]: string }) => {
-    setFilters(selectedFilters);
+  const handleApplyFilters = (category: string, selectedFilters: { [key: string]: string }) => {
+    setFilters(selectedFilters); // Gelen filtreleri state'e kaydet
   };
 
-  // Filtrelenmiş turlar
+  // Filtrelenmiş turları hesapla
   const filteredTours = tours.filter((tour) => {
     return Object.entries(filters).every(([key, value]) => {
       if (!value) return true; // Boş filtreleri geç
+
+      // Price filtrasyonu
       if (key === 'Min Price') return tour.price >= parseFloat(value);
       if (key === 'Max Price') return tour.price <= parseFloat(value);
-      if (key === 'Duration') return tour.duration.includes(value);
+      
+      // Location filtrasyonu
       if (key === 'Location') return tour.location.toLowerCase().includes(value.toLowerCase());
+      
+      // Duration filtrasyonu
+      if (key === 'Min Duration') return parseFloat(tour.duration) >= parseFloat(value);
+      if (key === 'Max Duration') return parseFloat(tour.duration) <= parseFloat(value);
+      
+      // Rating filtrasyonu
+      if (key === 'Rate') return tour.rating >= parseFloat(value);
+      if (key === 'Rate') return tour.rating <= parseFloat(value);
+
+      
       return true;
     });
   });
 
-  // Loading durumunu göster
+  // Loading durumu
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -37,7 +48,7 @@ export default function ToursPage() {
     );
   }
 
-  // Hata durumunu göster
+  // Hata durumu
   if (error) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -49,11 +60,11 @@ export default function ToursPage() {
     );
   }
 
-  // Tours boş ise
+  // Turlar yoksa
   if (tours.length === 0) {
     return (
       <div className="min-h-screen">
-        <Navbar />
+        <Navbar onApplyFilters={handleApplyFilters} />
         <div className="pt-16 px-4 flex items-center justify-center min-h-[60vh]">
           <p className="text-gray-500 text-center">No tours available</p>
         </div>
@@ -63,17 +74,10 @@ export default function ToursPage() {
 
   return (
     <div className="min-h-screen bg-gray-100">
-      <Navbar />
-      
+      <Navbar onApplyFilters={handleApplyFilters} />
+
       <main className="pt-16 px-4 mt-6">
         <h1 className="text-2xl font-bold mb-4 text-primary-600">Popular Tours</h1>
-        
-        <button
-          className="mb-4 bg-primary-500 text-white py-2 px-4 rounded"
-          onClick={() => setIsModalOpen(true)}
-        >
-          Filter Tours
-        </button>
 
         <div className="grid gap-4">
           {filteredTours.map((tour) => (
@@ -89,13 +93,6 @@ export default function ToursPage() {
           ))}
         </div>
       </main>
-
-      {isModalOpen && (
-        <CategoryModal
-          onClose={() => setIsModalOpen(false)}
-          onApplyFilters={handleApplyFilters}
-        />
-      )}
     </div>
   );
 }
