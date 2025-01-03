@@ -17,6 +17,7 @@ This is a Tourism Application built with **Next.js**, **TypeScript**, **Tailwind
 - [TailwindCSS](https://tailwindcss.com/) - Utility-first CSS framework for styling.
 - [Axios](https://axios-http.com/) - HTTP client for API requests.
 
+
 ## Getting Started
 
 Follow these steps to run the application locally:
