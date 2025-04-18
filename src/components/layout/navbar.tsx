@@ -31,7 +31,7 @@ const Navbar: React.FC<NavbarProps> = ({ onApplyFilters }) => {
 
         <button
           onClick={() => window.location.href = '/login'}
-          className="text-primary-500 text-xl"
+          className="text-primary-400 text-xl"
         >
           <FaUser />
         </button>
